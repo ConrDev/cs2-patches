@@ -1,4 +1,5 @@
 # CS2 Update Notifier
+[![CS2 Update Notifier](https://github.com/ConrDev/cs2-patches/actions/workflows/cs2-updates.yml/badge.svg?event=schedule)](https://github.com/ConrDev/cs2-patches/actions/workflows/cs2-updates.yml)
 
 Posts Counter-Strike 2 patch notes to a Discord channel via webhook,
 running for free on GitHub Actions every ~10 minutes.
