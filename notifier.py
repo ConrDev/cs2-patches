@@ -7,6 +7,7 @@ GitHub Actions workflow.
 
 import os
 import re
+import html
 import json
 import time
 import requests
@@ -32,10 +33,20 @@ def save_last_gid(gid):
 
 
 def clean_bbcode(text):
-    text = re.sub(r"\[list\]|\[/list\]", "", text)
-    text = re.sub(r"\[\*\]", "• ", text)
-    text = re.sub(r"\[url=(.*?)\](.*?)\[/url\]", r"\2 (\1)", text)
+    text = html.unescape(text)
+    # links: keep label, drop tag
+    text = re.sub(r"\[url=(.*?)\](.*?)\[/url\]", r"\2", text)
+    text = re.sub(r"\[img\].*?\[/img\]", "", text, flags=re.S)
+    # lists
+    text = text.replace("[/*]", "")          # <-- the missing one
+    text = text.replace("[*]", "\n• ")
+    text = re.sub(r"\[/?list\]", "\n", text)
+    # section headers like [ PREMIER ] -> bold
+    text = re.sub(r"\[\s([A-Z0-9 &]+)\s\]", r"\n\n**\1**", text)
+    # strip remaining tags (b, i, u, h1-h3, quote, etc.)
     text = re.sub(r"\[/?\w+.*?\]", "", text)
+    # collapse excess blank lines
+    text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
 
