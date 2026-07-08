@@ -73,7 +73,7 @@ def build_payload(item):
         "footer": {"text": "Counter-Strike 2 • Steam News"},
     }
 
-    return {"username": "CS2 Updates", "embeds": [embed]}
+    return {"username": "CS2 Updates", "content": "@here", "embeds": [embed], "allowed_mentions": {"parse": ["everyone"]}}
 
 
 def post_to_discord(item, webhook_urls):
