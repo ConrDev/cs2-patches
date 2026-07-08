@@ -1,0 +1,40 @@
+name: CS2 Update Notifier
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may delay a few min)
+  workflow_dispatch: {}       # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write             # needed to commit the state file back
+
+concurrency:
+  group: cs2-notifier
+  cancel-in-progress: false
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: Check for CS2 updates
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python notifier.py
+
+      - name: Commit state file if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add last_seen_gid.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update last seen CS2 update"
+            git push
+          fi
