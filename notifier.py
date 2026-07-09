@@ -53,7 +53,7 @@ def load_webhook_urls():
     # Split on newlines, commas, or pipes; drop empties and stray whitespace
     return [u.strip() for u in re.split(r"[\n,|]+", raw) if u.strip()]
 
-def _md(text):
+def _md(raw):
     """BBCode body text -> Discord markdown (headers/images handled separately)."""
     text = normalize_raw(raw)
 
